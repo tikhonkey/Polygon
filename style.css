@@ -1,0 +1,48 @@
+body {
+    margin: 0;
+}
+
+.container{
+    width: 685px;
+    height: 605px;
+    padding: 5px;
+    /*margin: 10px auto;*/
+    border: 1px solid #eee;
+}
+
+#map {
+    display: block;
+    float: left;
+    height: 600px;
+    width: 600px;
+    border: 1px solid #eee;
+}
+
+.buttons {
+    width: 75px;
+    float: right;
+}
+.buttons button {
+    margin-bottom: 5px;
+    padding: 3px 0;
+    min-width: 75px;
+    border-radius: 2px;
+}
+.buttons button:enabled {
+    background: #ffffdd;
+    cursor: pointer;
+}
+#info-window {
+    margin: 3px;
+    padding: 3px;
+    position: fixed;
+    z-index: 100;
+    background: #fff;
+    width: 590px;
+    font-family: Arial, serif;
+    opacity: 0.9;
+    font-size: 13px;
+    text-align: center;
+    line-height: 1.6;
+    display: none;
+}

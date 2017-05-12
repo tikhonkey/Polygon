@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Plugin</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://maps.googleapis.com/maps/documentation/javascript/demos/demos.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="plugin.js"></script>
+    <script src="convex_hull.js"></script>
+</head>
+    <body>
+
+        <div class="container">
+            <div id="info-window"></div>
+            <div id="map" style=""></div>
+            <div class="buttons">
+                <button id="create" onclick="PolygonPlugin.createNew()">Добавить полигон</button>
+                <button id="complete" onclick="PolygonPlugin.finishCurrent()">Закончить</button>
+                <button id="delete" onclick="#">Удалить полигон</button>
+                <button id="clear" onclick="#">Удалить все</button>
+                <hr>
+                <button id="export" onclick="#">Экспорт</button>
+                <button id="import" onclick="#">Импорт</button>
+            </div>
+        </div>
+
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA69I1eOmZPLHH-uW7_qJETmiGLrUFMW2o&callback=PolygonPlugin.initializeIt" type="text/javascript"></script>
+
+    </body>
+</html>
