@@ -1,5 +1,30 @@
 body {
     margin: 0;
+
+}
+
+iframe {
+    border: none;
+    position: absolute;
+    top: 25px;
+    left: calc( 50% - 340px);
+    width: 696px;
+    height: 616px;
+    z-index: 999;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    background: #fff;
+    display: none;
+}
+
+.hrefs {
+    position: fixed;
+    top: 5px;
+    left: 5px;
+    width: 150px;
+    border: 1px solid lightgray;
+    background: #fff;
+    padding: 5px;
+    border-radius: 5px;
 }
 
 .container{
@@ -7,10 +32,10 @@ body {
     height: 605px;
     padding: 5px;
     /*margin: 10px auto;*/
-    border: 1px solid #eee;
+    /*border: 1px solid #eee;*/
 }
 
-#map {
+#map{
     display: block;
     float: left;
     height: 600px;
@@ -32,7 +57,7 @@ body {
     background: #ffffdd;
     cursor: pointer;
 }
-#info-window {
+#info-window{
     margin: 3px;
     padding: 3px;
     position: fixed;

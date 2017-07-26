@@ -1,58 +1,73 @@
  $(function () {
     var myAppl = function () {
 
-
+        // All necessary variables
         var __self = this;
-        var allMarkers = [];
+        var allMarkers = [], polygonBase = [], renderedPolygons = [], selectedPolygons = [];
         var points;
-        var colorRandomiser;
+        var listenersCount = 0;
 
-        var infoWindow = document.getElementById('info-window');
+        var infoWindow = $('#info-window')[0];
 
+
+        // Basic params for map
         var mapOptions = {
-                zoom: 11,
-                center: {lat: 53.9, lng: 27.566},
-                mapTypeControl: false,
-                navigationControl: true,
-                scrollwheel: true
+            zoom: 11,
+            mapTypeControl: false,
+            navigationControl: true,
+            scrollwheel: true
+
         };
 
+        // Getting location, works perfect in chrome only, in other browsers need timeout
+        function getLocation () {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                __self.map.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
+            });
+         }
+
+         // Function to initialize map
         this.initializeIt = function() {
 
-            this.map = new google.maps.Map(document.getElementById('map'),
-                mapOptions);
+            this.map = new google.maps.Map( $('#map')[0], mapOptions);
 
-            document.getElementById("complete").disabled = true;
-            document.getElementById("delete").disabled = true;
-            document.getElementById("clear").disabled = true;
+            getLocation();
+
+            buttonSwitch ('complete', true);
+            buttonSwitch ('delete', true);
+            buttonSwitch ('clear', true);
+            buttonSwitch ('export', true);
 
         };
 
-
-
-
-
+        // Function to create new polygon
         this.createNew = function () {
 
+            // Check if button pressed twice
             if (this.clickListener) {
-                google.maps.event.removeListener(this.clickListener);
+                this.finishCurrent();
+                buttonSwitch ('clear', true);
+                buttonSwitch ('export', true);
             }
 
-            if (infoWindow.style.display === '') {
-                infoWindow.innerHTML = 'Укажите возможные координаты полигона, кликая по карте. <br> По завершении нажмите "Закончить", либо "Добавить полигон", чтобы добавить новый полигон';
-                infoWindow.style.display = 'block';
+            // Check if polygon is selected and reset it
+            if (selectedPolygons) {
+                selectedPolygons = [];
+                buttonSwitch ('delete', true);
             }
 
-            document.getElementById("complete").disabled = false;
+            infoWindowSwitch('Укажите возможные координаты вершин полигона, кликая по карте. <br> По завершении нажмите "Закончить", либо "Добавить полигон", чтобы добавить новый полигон');
 
-            this.createMarker = function (coord, marker_number) {
+            buttonSwitch ('complete', false);
+
+            this.createMarker = function (coord) {
                return new google.maps.Marker({
                     position: coord,
                     map: this.map
                 });
-
             };
 
+            //  Add listener for markers
             this.clickListener = this.map.addListener('click', function (e) {
                 if (e.latLng) {
                     var coord = {lat: e.latLng.lat(), lng: e.latLng.lng()};
@@ -63,128 +78,31 @@
 
         };
 
+        // Function to calculate hulls of polygon
+        function calculateConvexHull() {
 
+            if (allMarkers.length !== 0) {
+                var hullPoints = [];
+                points = [];
 
-        function removeMarkers() {
-            for (var i = 0; i < allMarkers.length; i++) {
-                allMarkers[i].setMap(null);
-                allMarkers.splice(i, 1);
-                i--;
+                for (var i = 0; i < allMarkers.length; i++) {
+                    points.push(allMarkers[i].getPosition());
+                }
+                points.sort(sortPointY);
+                points.sort(sortPointX);
+
+                chainHull_2D(points, points.length, hullPoints);
+
+                polygonBase.push(hullPoints);
             }
-        };
-
-        function calculateConvexHull(){
-            // if (polyline) polyline.setMap(null);
-            points = [];
-            for (var i = 0; i < allMarkers.length; i++) {
-                points.push(allMarkers[i].getPosition());
-            }
-            points.sort(sortPointY);
-            points.sort(sortPointX);
-            DrawHull();
         }
 
         function sortPointX (a, b) {
             return a.lng() - b.lng();
         }
-
         function sortPointY (a, b) {
             return a.lat() - b.lat();
         }
-
-        function DrawHull() {
-            var hullPoints = [];
-            chainHull_2D(points, points.length, hullPoints);
-            var polyline = new google.maps.Polygon({
-                map: map,
-                paths: hullPoints,
-                fillColor: colorRandomiser,
-                strokeWidth: 1,
-                fillOpacity: 0.15,
-                strokeColor: colorRandomiser,
-                strokeOpacity: 0.5,
-                draggable: true
-            });
-            polyline.setMap(map);
-        }
-
-
-
-        this.finishCurrent = function () {
-
-            infoWindow.innerHTML = '';
-            infoWindow.style.display = '';
-
-            google.maps.event.removeListener(this.clickListener);
-            document.getElementById("complete").disabled = true;
-
-            colorRandomiser = "#" + ((1 << 24) * Math.random() | 0).toString(16);
-
-            calculateConvexHull();
-            removeMarkers();
-
-        }
-
-
-
-    };
-    window.PolygonPlugin = new myAppl();
- });
-
-
-
-
-
-
-
-
-
- // -------------------------------------------------------------------------------------------------------- //
- // -------------------------------------------------------------------------------------------------------- //
- // -------------------------------------------------------------------------------------------------------- //
-
-
-
-
-
-    function initializeI() {
-        // Create a map object and specify the DOM element for display.
-
-        // var allMarkers = [],
-        //     colorRandomiser,
-        var    polyline;
-
-        // var myOptions = {
-        //     zoom: 11,
-        //     center: {lat: 53.9, lng: 27.566},
-        //     mapTypeControl: false,
-        //     navigationControl: true,
-        //     scrollwheel: true
-        // };
-        // var map = new google.maps.Map(document.getElementById('map'),
-        //     myOptions);
-
-
-        // Event listener for close info window
-        // map.addListener('click', function() {
-        //     infowindow.close();
-        // });
-        // var infowindow = new google.maps.InfoWindow(
-        //     {
-        //         size: new google.maps.Size(50,50)
-        //     });
-
-
-
-        // Create event listener on left-click: adding current len/lat to array + pre-render polygon.
-        // var listener1 = map.addListener('click', function (e) {
-        //     if (e.latLng) {
-        //         var coord = {lat: e.latLng.lat(), lng: e.latLng.lng()};
-        //         var marker = createMarker(coord, allMarkers.length);
-        //         allMarkers.push(marker);
-        //     }
-        // });
-
 
         function removeMarkers() {
             for (var i = 0; i < allMarkers.length; i++) {
@@ -194,69 +112,182 @@
             }
         }
 
-        // function createMarker(coord, marker_number) {
-        //     var marker = new google.maps.Marker({
-        //         position: coord,
-        //         map: map,
-        //     });
-        //
-        //     // google.maps.event.addListener(marker, 'click', function() {
-        //     //     var contentString = marker_number + "<br><a href='javascript:removeMarker(LatLng("+marker.getPosition().toUrlValue()+"));'><b>удалить</b></a>";
-        //     //     infowindow.setContent(contentString);
-        //     //     infowindow.open(map,marker);
-        //     // });
-        //
-        //     return marker;
-        // }
+        // Add listeners on polygons for selecting them and check for dragging
+        function listenersOnPolygons(arg){
+            google.maps.event.addListener(arg, 'click', function (){
 
+                // Check if already selected
+                if(arg.trigger === 0) {
 
-        // Calculate convex polygon
-        function calculateConvexHull() {
-            // if (polyline) polyline.setMap(null);
-            var points = [];
-            for (var i = 0; i < allMarkers.length; i++) {
-                points.push(allMarkers[i].getPosition());
-            }
-            points.sort(sortPointY);
-            points.sort(sortPointX);
-            DrawHull();
-        }
+                    listenersCount++;
 
-        function sortPointX(a, b) {
-            return a.lng() - b.lng();
-        }
+                    arg.trigger = 1;
+                    arg.setMap(null);
+                    arg.fillOpacity = 0.5;
+                    arg.setMap(__self.map);
 
-        function sortPointY(a, b) {
-            return a.lat() - b.lat();
-        }
+                    selectedPolygons.push(arg.indexID);
 
-        // Draw polygon
-        function DrawHull() {
-            hullPoints = [];
-            chainHull_2D(points, points.length, hullPoints);
-            polyline = new google.maps.Polygon({
-                map: map,
-                paths: hullPoints,
-                fillColor: colorRandomiser,
-                strokeWidth: 1,
-                fillOpacity: 0.15,
-                strokeColor: colorRandomiser,
-                strokeOpacity: 0.5,
-                draggable: true
+                    buttonSwitch ('delete', false);
+
+                } else if (arg.trigger === 1) {
+
+                    listenersCount--;
+
+                    arg.trigger = 0;
+                    arg.setMap(null);
+                    arg.fillOpacity = 0.15;
+                    arg.setMap(__self.map);
+
+                    if (listenersCount === 0){
+                        buttonSwitch ('delete', true);
+                        selectedPolygons = [];
+                    }
+
+                    for ( var i = 0; i < selectedPolygons.length; i++ ) {
+                        if (selectedPolygons[i] === arg.indexID ) {
+                            selectedPolygons.splice(i--, 1);
+                        }
+                    }
+
+                }
             });
-            polyline.setMap(map);
+
+            // Save ccords after drag
+            google.maps.event.addListener(arg, "dragend", function () {
+                polygonBase[arg.indexID] = (arg.getPath().getArray());
+            });
         }
 
+        // Render function
+        function renderPolygons (){
 
-        // Create event listener to construct polygon on right-click.
-        var listener2 = map.addListener('rightclick', function () {
+            if (renderedPolygons) {
+                for (var j = 0 ; j < renderedPolygons.length ; j++ ){
+                    renderedPolygons[j].setMap(null);
+                }
+                renderedPolygons = [];
+            }
+            for (var i = 0; i < polygonBase.length ; i++ ) {
+                var polyline = new google.maps.Polygon({
+                    map: __self.map,
+                    paths: polygonBase[i],
+                    fillColor: 'ccddee',
+                    strokeWidth: 1,
+                    fillOpacity: 0.15,
+                    strokeColor: 'ccddee',
+                    strokeOpacity: 0.5,
+                    indexID: i,
+                    draggable: true,
+                    trigger: 0
+                });
+                renderedPolygons.push(polyline);
+                listenersOnPolygons(polyline);
+            }
+        }
 
-            // Get random color for each polygon.
-            colorRandomiser = "#" + ((1 << 24) * Math.random() | 0).toString(16);
+        // Import JSON coords function
+        this.importIt = function(form) {
+            try {
+                polygonBase = JSON.parse(form.import.value);
+                renderPolygons();
+                infoWindowSwitch('off');
+                buttonSwitch('clear', false);
+                buttonSwitch('export', false);
+            }
+            catch (e) {
+                infoWindowSwitch('<b style="color: red;">Ошибка! Введены некорректные данные.</b>');
+            }
+        };
 
+        // Function for better work with info window
+        function infoWindowSwitch(param) {
+            switch (param) {
+                case 'off':
+                    infoWindow.innerHTML = '';
+                    infoWindow.style.display = '';
+                    break;
+                default:
+                    infoWindow.style.display = '';
+                    infoWindow.innerHTML = param;
+                    infoWindow.style.display = 'block';
+            }
+        }
+
+        // Function for better work with buttons
+        function buttonSwitch(id, param) {
+            document.getElementById(id).disabled = param;
+        }
+
+        // Delete selected polygon(s)
+        this.deletePolygon  = function () {
+
+            // If only one is selected
+            if (selectedPolygons.length === polygonBase.length){
+
+                this.deleteAllPolygons();
+                selectedPolygons = [];
+                buttonSwitch ('delete', true);
+
+            } else {
+
+                selectedPolygons.sort().reverse();
+                for (var i = 0; i < selectedPolygons.length; i++) {
+                    polygonBase.splice(selectedPolygons[i], 1);
+                }
+                selectedPolygons = [];
+                buttonSwitch ('delete', true);
+                renderPolygons();
+
+            }
+        };
+
+        // Delete all polygons
+        this.deleteAllPolygons = function() {
+
+            for (var j = 0 ; j < renderedPolygons.length ; j++ ){
+                renderedPolygons[j].setMap(null);
+            }
+            renderedPolygons = [];
+            polygonBase = [];
+
+            infoWindowSwitch('off');
+
+            buttonSwitch ('delete', true);
+            buttonSwitch ('clear', true);
+            buttonSwitch ('export', true);
+
+        };
+
+        // Finishing current polygon
+        this.finishCurrent = function () {
+
+            infoWindowSwitch('off');
+
+            google.maps.event.removeListener(this.clickListener);
+
+            buttonSwitch ('complete', true);
             calculateConvexHull();
-
             removeMarkers();
-        });
-    }
+            renderPolygons();
 
+            if ( polygonBase.length !== 0 ) {
+                buttonSwitch ('clear', false);
+                buttonSwitch ('export', false);
+            }
+
+        };
+
+        // Export polygons hulls to JSON
+        this.exportPolygons = function () {
+            infoWindowSwitch('Координаты вершин полигонов: <br><textarea style="word-break:break-all;" cols="70" rows="10" >' + JSON.stringify(polygonBase)+'</textarea>');
+        };
+
+        // Importing JSON polygons hulls
+        this.importPolygons = function () {
+            infoWindowSwitch('Введите координаты вершин полигонов: <br><form><textarea name="import" style="word-break:break-all;" cols="70" rows="10" ></textarea><br><input type="submit" onclick="PolygonPlugin.importIt(this.form);return false" value="Импорт"> </form>');
+        }
+
+    };
+    window.PolygonPlugin = new myAppl();
+ });
