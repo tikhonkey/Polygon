@@ -14,7 +14,7 @@
     e. Import;  
 6. When user click on the "Add a polygon" button, he should be able to draw a polygon on the map, clicking on it. With each click on the map in the potential polygon point must be added point-vertex. When the user wants to complete adding vertices to the polygon, he should be able to click on the button "Add a polygon" again.
 7. When clicking on an already drawn polygon system should highlight it (polygon).
-8. User should be able to move the selected polygon on the map with the mouse.
+8. User should be able to move the selected polygon on the map using mouse.
 9. By clicking on the "Delete polygon" button the system should delete the selected polygon from the map.
 10. By clicking on "Delete All" button the system must delete all polygons from the map.
 11. By clicking on the "Export" button the system should output the list of polygons with the coordinates of the vertices in JSON format to any place in HTML.
