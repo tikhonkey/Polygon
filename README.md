@@ -6,7 +6,7 @@
 2. The widget must work in latest version on Google Chrome
 3. Google Maps API must be used to work with maps
 4. When opened, the widget should automatically determine the current user position by using Geo HTML5 API and center the map on the received coordinates.
-5. The following tools should be available to the user:  
+5. The following tools should be available to user:  
     a. Add a polygon;  
     b. Delete the polygon;  
     c. Delete everything;  
