@@ -6,12 +6,12 @@
 2. The widget must work in latest version on Google Chrome
 3. Google Maps API must be used to work with maps
 4. When opened, the widget should automatically determine the current user position by using Geo HTML5 API and center the map on the received coordinates.
-5. The following tools should be available to the user:
-    a. Add a polygon;
-    b. Delete the polygon;
-    c. Delete everything;
-    d. Export;
-    e. Import;
+5. The following tools should be available to the user:  
+    a. Add a polygon;  
+    b. Delete the polygon;  
+    c. Delete everything;  
+    d. Export;  
+    e. Import;  
 6. When user click on the "Add a polygon" button, he should be able to draw a polygon on the map, clicking on it. With each click on the map in the potential polygon point must be added point-vertex. When the user wants to complete adding vertices to the polygon, he should be able to click on the button "Add a polygon" again.
 7. When clicking on an already drawn polygon system should highlight it (polygon).
 8. User should be able to move the selected polygon on the map with the mouse.
