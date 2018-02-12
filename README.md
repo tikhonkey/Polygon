@@ -21,3 +21,6 @@
 12. User should be able to import the drawn polygons (using the JSON format from the export) to the widget using the "Import" button.
 13. The system should allow user to create only convex polygons.
 14. The system should allow to create several widgets on one page (the widget code must be correctly encapsulated and not conflict with other widget instances on the page).
+
+
+Preview link: [https://tikhonkey.github.io/Polygon/](https://tikhonkey.github.io/Polygon/)
